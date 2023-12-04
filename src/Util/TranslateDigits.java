@@ -1,7 +1,12 @@
 package Util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class TranslateDigits {
 
@@ -22,10 +27,24 @@ public class TranslateDigits {
     }
 
     public static String execute(String input) {
-        String result =  input;
-        for (String digit: digitStrings) {
-            result = result.replaceAll(digit, digitMap.get(digit));
+        Pattern pattern = Pattern.compile(getPattern());
+        ArrayList<String> matches = new ArrayList<>();
+        Matcher matcher = pattern.matcher(input);
+        while (matcher.find()) {
+            matches.add(matcher.group(1));
         }
-        return result;
+        StringBuilder result = new StringBuilder();
+        for (String match: matches) {
+            result.append(digitMap.getOrDefault(match, match));
+        }
+        return result.toString();
+    }
+
+    private static String getPattern() {
+        StringJoiner joiner = new StringJoiner("|");
+        for(String digit: digitStrings) {
+            joiner.add(digit);
+        }
+        return "(?=(" + joiner + "|[1-9])).";
     }
 }
