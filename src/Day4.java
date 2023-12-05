@@ -1,8 +1,6 @@
 import Util.ReadFileAsArray;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Day4 {
@@ -12,9 +10,26 @@ public class Day4 {
         AtomicInteger sum = new AtomicInteger();
         lines.forEach((line) -> sum.addAndGet(getScore(line)));
         System.out.println(sum.get());
+
+        Map<Integer, Integer> cardCounts = new HashMap<>();
+        // initialise count of cards
+        for (int i = 1; i <= lines.size(); i++) {
+            cardCounts.put(i, 1);
+        }
+        for (int i = 1; i <= lines.size(); i++) {
+            String line = lines.get(i-1);
+            int cardCount = cardCounts.get(i);
+            int winningNumberCount = getWinningNumberCount(line);
+            for (int j = i + 1; j <= lines.size() && j <= i + winningNumberCount; j++) {
+                cardCounts.put(j, cardCounts.get(j) + cardCount);
+            }
+        }
+        AtomicInteger totalCards = new AtomicInteger();
+        cardCounts.forEach((k, v) -> totalCards.addAndGet(v));
+        System.out.println(totalCards.get());
     }
 
-    private static int getScore(String line) {
+    private static int getWinningNumberCount(String line) {
         String numbers = line.substring(line.indexOf(':') + 1);
         String[] numberSets = numbers.split("\\|");
         String winningNumbers = numberSets[0].trim();
@@ -22,7 +37,11 @@ public class Day4 {
         Set<Integer> winningSet = getNumberSet(winningNumbers);
         Set<Integer> playedSet = getNumberSet(playedNumbers);
         winningSet.retainAll(playedSet);
-        int power = winningSet.size() - 1;
+        return winningSet.size();
+    }
+
+    private static int getScore(String line) {
+        int power = getWinningNumberCount(line) - 1;
         return (int)Math.pow(2, power);
     }
 
