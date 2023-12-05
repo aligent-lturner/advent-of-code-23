@@ -10,9 +10,7 @@ public class Day4 {
     public static void main(String[] args) {
         ArrayList<String> lines = ReadFileAsArray.execute("./input/day-4.txt");
         AtomicInteger sum = new AtomicInteger();
-        lines.forEach((line) ->  {
-            sum.addAndGet(getScore(line));
-        });
+        lines.forEach((line) -> sum.addAndGet(getScore(line)));
         System.out.println(sum.get());
     }
 
