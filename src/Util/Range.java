@@ -1,29 +1,43 @@
 package Util;
 
-import java.util.OptionalLong;
+import java.util.Comparator;
 
-public class Range {
+public class Range implements Comparable<Range> {
 
-    private long destinationRangeStart;
-    private long sourceRangeStart;
-    private long length;
+    private final long startValue;
+    private final long endValue;
 
-    public OptionalLong getDestination(long source) {
-        if (source >= sourceRangeStart && source < sourceRangeStart + length) {
-            return OptionalLong.of(source - (sourceRangeStart - destinationRangeStart));
+    public Range(long startValue, long endValue) {
+        this.startValue = startValue;
+        this.endValue = endValue;
+    }
+
+    public long getStartValue() {
+        return startValue;
+    }
+
+    public long getEndValue() {
+        return this.endValue;
+    }
+
+    public boolean intersects(Range other) {
+        if (other.startValue <= this.startValue) {
+            return (other.endValue >= this.startValue);
+        } else {
+            return other.startValue <= this.endValue;
         }
-        return OptionalLong.empty();
     }
 
-    public void setDestinationRangeStart(long destinationRangeStart) {
-        this.destinationRangeStart = destinationRangeStart;
+    public Range getIntersection(Range other) {
+        return new Range(Math.max(startValue, other.getStartValue()), Math.min(endValue, other.getEndValue()));
     }
 
-    public void setSourceRangeStart(long sourceRangeStart) {
-        this.sourceRangeStart = sourceRangeStart;
+    @Override
+    public int compareTo(Range o) {
+        return Comparator.comparingLong(Range::getStartValue).compare(this, o);
     }
 
-    public void setLength(long length) {
-        this.length = length;
+    public String toString() {
+        return startValue + " - " + endValue;
     }
 }

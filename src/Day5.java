@@ -1,9 +1,8 @@
+import Util.FindMinimumValidValue;
 import Util.RangeMapping;
 import Util.ReadFileAsArray;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Day5 {
 
@@ -29,30 +28,35 @@ public class Day5 {
         List<String> temperatureHumidityMapLines = lines.subList(temperatureHumidStart, humidLocStart - 2);
         List<String> humidityLocationMapLines = lines.subList(humidLocStart, lines.size() - 1);
 
-        RangeMapping seedMapping = new RangeMapping(seedSoilMapLines);
-        RangeMapping soilMapping = new RangeMapping(soilFertilizerMapLines);
-        seedMapping.setNext(soilMapping);
-        RangeMapping fertilizerMapping = new RangeMapping(fertilizerWaterMapLines);
-        soilMapping.setNext(fertilizerMapping);
-        RangeMapping waterMapping = new RangeMapping(waterLightMapLines);
-        fertilizerMapping.setNext(waterMapping);
-        RangeMapping lightMapping = new RangeMapping(lightTemperatureMapLines);
-        waterMapping.setNext(lightMapping);
-        RangeMapping temperatureMapping = new RangeMapping(temperatureHumidityMapLines);
-        lightMapping.setNext(temperatureMapping);
-        RangeMapping humidityMapping = new RangeMapping(humidityLocationMapLines);
-        temperatureMapping.setNext(humidityMapping);
-
-        long minLocation = Long.MAX_VALUE;
         seeds = seeds.replace("seeds:", "").trim();
         String[] seedArray = seeds.split("\\s+");
         long[] seedInts = Arrays.stream(seedArray).mapToLong(Long::parseLong).toArray();
-        for (long seed : seedInts) {
-            long location = seedMapping.getFinalDestination(seed);
-            if (location < minLocation) {
-                minLocation = location;
-            }
+        List<String> seedSeedMapLines = new ArrayList<>();
+        for (long seed: seedInts) {
+            seedSeedMapLines.add(seed + " " + seed + " " + "1");
         }
-        System.out.println(minLocation);
+        RangeMapping seedSeedMapping = new RangeMapping(seedSeedMapLines, null, "seed-seed");
+        RangeMapping seedSoilMapping = new RangeMapping(seedSoilMapLines, seedSeedMapping, "seed-soil");
+        RangeMapping soilFertilizerMapping = new RangeMapping(soilFertilizerMapLines, seedSoilMapping, "soil-fertilizer");
+        RangeMapping fertilizerWaterMapping = new RangeMapping(fertilizerWaterMapLines, soilFertilizerMapping, "fertilizer-water");
+        RangeMapping waterLightMapping = new RangeMapping(waterLightMapLines, fertilizerWaterMapping, "water-light");
+        RangeMapping lightTemperatureMapping = new RangeMapping(lightTemperatureMapLines, waterLightMapping, "light-temperature");
+        RangeMapping temperatureHumidityMapping = new RangeMapping(temperatureHumidityMapLines, lightTemperatureMapping, "temperature-humidity");
+        RangeMapping humidityLocationMapping = new RangeMapping(humidityLocationMapLines, temperatureHumidityMapping, "humidity-location");
+
+        // part 1
+        OptionalLong minValue = FindMinimumValidValue.execute(humidityLocationMapping);
+        System.out.println(minValue.isPresent() ? minValue.getAsLong() : "No Location Found");
+
+
+        seedSeedMapLines = new ArrayList<>();
+        for (int i = 0; i < seedInts.length-1; i = i+2) {
+            seedSeedMapLines.add(seedInts[i] + " " + seedInts[i] + " " + seedInts[i+1]);
+        }
+        seedSeedMapping = new RangeMapping(seedSeedMapLines, null, "seed-seed");
+        seedSoilMapping.setNext(seedSeedMapping);
+
+        minValue = FindMinimumValidValue.execute(humidityLocationMapping);
+        System.out.println(minValue.isPresent() ? minValue.getAsLong() : "No Location Found");
     }
 }
