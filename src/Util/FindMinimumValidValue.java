@@ -5,10 +5,8 @@ import java.util.OptionalLong;
 public class FindMinimumValidValue {
 
     public static OptionalLong execute(RangeMapping rangeMapping) {
-        //Range boundingRange = new Range(0, Long.MAX_VALUE);
-        Range boundingRange = new Range(37384980, 37384990);
+        Range boundingRange = new Range(0, Long.MAX_VALUE);
         return binarySearch(rangeMapping, boundingRange);
-
     }
 
     private static OptionalLong binarySearch(RangeMapping rangeMapping, Range boundingRange) {

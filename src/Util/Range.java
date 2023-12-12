@@ -32,12 +32,16 @@ public class Range implements Comparable<Range> {
         return new Range(Math.max(startValue, other.getStartValue()), Math.min(endValue, other.getEndValue()));
     }
 
+    public boolean isInvalid() {
+        return endValue < startValue;
+    }
+
     @Override
     public int compareTo(Range o) {
         return Comparator.comparingLong(Range::getStartValue).compare(this, o);
     }
 
     public String toString() {
-        return startValue + " - " + endValue;
+        return String.format("%010d", startValue) + " - " + String.format("%010d", endValue);
     }
 }

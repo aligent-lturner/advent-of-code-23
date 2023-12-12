@@ -1,5 +1,7 @@
 package Util;
 
+import java.util.OptionalLong;
+
 public class RangePair implements Comparable<RangePair> {
 
     private final Range sourceRange;
@@ -22,12 +24,19 @@ public class RangePair implements Comparable<RangePair> {
         return destinationRange.intersects(boundingRange);
     }
 
+    public OptionalLong getSourceValueFromDestination(long destination) {
+        if (hasValueInRange(new Range(destination, destination))) {
+            return OptionalLong.of((destination - destinationRange.getStartValue()) + sourceRange.getStartValue());
+        }
+        return OptionalLong.empty();
+    }
+
     @Override
     public int compareTo(RangePair o) {
         return this.destinationRange.compareTo(o.destinationRange);
     }
 
     public String toString() {
-        return sourceRange + " , " + destinationRange;
+        return destinationRange + " , " + sourceRange;
     }
 }
