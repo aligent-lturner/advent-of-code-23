@@ -14,7 +14,12 @@ public class Day6 {
         long[] timesAsLongs = Arrays.stream(timeValues).mapToLong(Long::parseLong).toArray();
         long[] distancesAsLongs = Arrays.stream(distanceValues).mapToLong(Long::parseLong).toArray();
 
-        System.out.println(getProductOfWays(timesAsLongs, distancesAsLongs));
+        System.out.println("Part 1: " + getProductOfWays(timesAsLongs, distancesAsLongs));
+
+        // Part 2
+        long time = Long.parseLong(times.replace("Time:", "").replaceAll("\\s+", ""));
+        long distance = Long.parseLong(distances.replace("Distance:", "").replaceAll("\\s+", ""));
+        System.out.println("Part 2: " + calculateDistinctWays(time, distance));
     }
 
     private static long getProductOfWays(long[] times, long[] distances) {
