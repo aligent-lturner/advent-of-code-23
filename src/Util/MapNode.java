@@ -32,6 +32,17 @@ public class MapNode implements Comparable<MapNode> {
         return value;
     }
 
+    public boolean isStartingNode() {
+        return value.endsWith("A");
+    }
+
+    public boolean isEndingNode(boolean strict) {
+        if (strict) {
+            return value.equals("ZZZ");
+        }
+        return value.endsWith("Z");
+    }
+
     @Override
     public int compareTo(MapNode o) {
         // sort by node values (useful for finding AAA to start)

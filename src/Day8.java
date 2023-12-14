@@ -1,9 +1,9 @@
+import Util.GetPrimeFactors;
 import Util.MapNode;
 import Util.ReadFileAsArray;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Day8 {
 
@@ -32,29 +32,57 @@ public class Day8 {
             node.setLeft(leftNode);
             node.setRight(rightNode);
         }
-        MapNode startingNode = nodeMap.get("AAA");
-        if (startingNode == null) {
-            System.out.println("Could not find starting node");
-            return;
-        }
+        Set<MapNode> startingNodes = new HashSet<>();
+        startingNodes.add(nodeMap.get("AAA"));
 
-        long numSteps = countStepsToDestination(steps, startingNode, "ZZZ");
-        System.out.println("Number of steps = " + numSteps);
+        long numSteps = getLowestCommonMultiple(steps, startingNodes, true);
+        System.out.println("Part 1: Number of steps = " + numSteps);
+        startingNodes = new HashSet<>(nodeMap.values().stream().filter(MapNode::isStartingNode).toList());
+
+        numSteps = getLowestCommonMultiple(steps, startingNodes, false);
+        System.out.println("Part 2: Number of steps = " + numSteps);
     }
 
-    private static long countStepsToDestination(char[] instructions, MapNode startingNode, String destination) {
+    private static long getLowestCommonMultiple(char[] instructions, Set<MapNode> startingNodes, boolean strict) {
+        List<List<Long>> primeFactors = startingNodes.stream().
+                map(node -> countStepsToDestination(instructions, node, strict)).
+                map(GetPrimeFactors::execute).toList();
+
+        Set<Long> distinctFactors = new TreeSet<>();
+        primeFactors.forEach(distinctFactors::addAll);
+
+        long lcm = 1;
+        for (long factor: distinctFactors) {
+            AtomicLong maxCount = new AtomicLong();
+            primeFactors.forEach(factors ->  {
+                long count = factors.stream().filter(f -> f == factor).count();
+                if (count > maxCount.get()) {
+                    maxCount.set(count);
+                }
+            });
+            if (maxCount.get() > 0) {
+                for (long j = 1; j <= maxCount.get(); j++) {
+                    lcm = lcm * factor;
+                }
+            }
+        }
+
+        return lcm;
+    }
+
+    private static long countStepsToDestination(char[] instructions, MapNode startingNode, boolean strict) {
         long steps = 0;
         MapNode current = startingNode;
-        while (!current.getValue().equals(destination)) {
+        while (!current.isEndingNode(strict)) {
             for (char instruction : instructions) {
-                System.out.println(current.getValue() + " -> " + instruction + ":");
                 steps++;
+                //Set<MapNode> newCurrentNodes = new HashSet<>();
                 if (instruction == 'L') {
                     current = current.getLeft();
                 } else if (instruction == 'R') {
                     current = current.getRight();
                 }
-                if (current.getValue().equals(destination)) {
+                if (current.isEndingNode(strict)) {
                     break;
                 }
             }
