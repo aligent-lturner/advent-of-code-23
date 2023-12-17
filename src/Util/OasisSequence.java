@@ -41,6 +41,19 @@ public class OasisSequence {
         return nextValue + sequence.getLast();
     }
 
+    public long getPreviousValue() {
+        // get 2nd to last history line (last one is all zeros)
+        if (history.size() < 2) {
+            return sequence.getFirst();
+        }
+        long previousValue = 0;
+        for (int i = history.size() - 2; i >= 0; i--) {
+            List<Long> previous = history.get(i);
+            previousValue = previous.getFirst() - previousValue;
+        }
+        return sequence.getFirst() - previousValue;
+    }
+
     private boolean notAllZero(List<Long> previous) {
         return !previous.stream().allMatch(value -> value == 0L);
     }

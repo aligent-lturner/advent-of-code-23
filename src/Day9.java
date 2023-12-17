@@ -10,13 +10,20 @@ public class Day9 {
         List<Long> nextValues = getNextValues(lines);
         long sum = getSum(nextValues);
         System.out.println("Part 1 - sum = " + sum);
+        List<Long> previousValues = getPreviousValues(lines);
+        sum = getSum(previousValues);
+        System.out.println("Part 2 - sum = " + sum);
     }
 
     private static List<Long> getNextValues(List<String> lines) {
         return lines.stream().map(OasisSequence::new).map(OasisSequence::getNextValue).toList();
     }
 
-    private static long getSum(List<Long> nextValues) {
-        return nextValues.stream().mapToLong(Long::valueOf).sum();
+    private static List<Long> getPreviousValues(List<String> lines) {
+        return lines.stream().map(OasisSequence::new).map(OasisSequence::getPreviousValue).toList();
+    }
+
+    private static long getSum(List<Long> values) {
+        return values.stream().mapToLong(Long::valueOf).sum();
     }
 }
