@@ -37,9 +37,7 @@ public class Day3 {
         char[] charArray = line.toCharArray();
         for (int i = 1; i <= charArray.length; i++) {
             if ((onlyGears && GEAR_SYMBOL == charArray[i-1]) || (!onlyGears && !NON_SYMBOLS.contains(charArray[i-1]))) {
-                Coordinates coords = new Coordinates();
-                coords.setX(i);
-                coords.setY(y);
+                Coordinates coords = new Coordinates(i, y);
                 symbolCoordinates.add(coords);
             }
         }
@@ -90,9 +88,7 @@ public class Day3 {
                 StringBuilder numberString = new StringBuilder();
                 do {
                     numberString.append(charArray[i - 1]);
-                    Coordinates coordinates = new Coordinates();
-                    coordinates.setX(i);
-                    coordinates.setY(y);
+                    Coordinates coordinates = new Coordinates(i, y);
                     range.add(coordinates);
                     i++;
                 } while (i <= charArray.length && NUMBERS.contains(charArray[i-1]));

@@ -2,8 +2,13 @@ package Util;
 
 public class Coordinates {
 
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
+
+    public Coordinates(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 
     public boolean isAdjacent(Coordinates other) {
         if (Math.abs(x - other.getX()) > 1) {
@@ -16,15 +21,22 @@ public class Coordinates {
         return x;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
     public int getY() {
         return y;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public boolean equals(Object other) {
+        if (!(other instanceof  Coordinates)) {
+            return false;
+        }
+        return x == ((Coordinates) other).getX() && y == ((Coordinates) other).getY();
+    }
+
+    public int hashCode() {
+        return x * 1000 + y;
+    }
+
+    public String toString() {
+        return "(" + x + "," + y + ")";
     }
 }
