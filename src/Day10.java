@@ -1,7 +1,9 @@
 import Util.Coordinates;
+import Util.GetPolygonArea;
 import Util.PipeNode;
 import Util.ReadFileAsArray;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,14 +19,20 @@ public class Day10 {
         for (int y = 1; y <= lines.size(); y++ ) {
             char[] chars = lines.get(y-1).toCharArray();
             for (int x = 1; x<= chars.length; x++) {
-                if (chars[x-1] != '.') {
-                    PipeNode pipeNode = new PipeNode(x, y, chars[x - 1]);
-                    nodes.add(pipeNode);
-                }
+                PipeNode pipeNode = new PipeNode(x, y, chars[x - 1]);
+                nodes.add(pipeNode);
             }
         }
-        int steps = getTotalStepsInLoop(nodes);
+
+        List<PipeNode> loopNodes = getLoopNodes(nodes);
+        int steps = loopNodes.size();
         System.out.println("Part 1: Max distance = " + steps/2);
+
+        int loopArea = GetPolygonArea.execute(loopNodes.stream().map(PipeNode::getPosition).toList());
+        // pick's theorem is that A = i + b/2 - 1, where A = area, i = interior points, b = edge points
+        // therefore, i = A - b/2 + 1
+        int enclosedPoints = loopArea - (steps / 2) + 1;
+        System.out.println("Part 2: enclosed node count = " + enclosedPoints);
     }
 
     private static PipeNode getStartNode(Set<PipeNode> nodes) {
@@ -37,28 +45,25 @@ public class Day10 {
                 collect(Collectors.toSet());
     }
 
-    private static int getTotalStepsInLoop(Set<PipeNode> nodes) {
-        Set<PipeNode> visitedNodes = new HashSet<>();
+    private static List<PipeNode> getLoopNodes(Set<PipeNode> nodes) {
+        List<PipeNode> visitedNodes = new ArrayList<>();
         PipeNode start = getStartNode(nodes);
         System.out.println("Starting at" + start);
         Set<PipeNode> connectedNodes = getNodesConnectedToStart(start, nodes);
-        // start with one connection - doesn't matter which
         PipeNode current = connectedNodes.stream().findFirst().orElse(null);
-
-        int count = 1;
         while (current != null && !current.equals(start)) {
             System.out.println(current);
             visitedNodes.add(current);
-            count++;
             Coordinates nextCoords = current.getConnectedCoordinates().stream().
                     filter(coords -> !visitedNodes.contains(new PipeNode(coords.getX(), coords.getY(), '.'))).
                     findFirst().orElse(null);
             if (nextCoords == null) {
                 System.out.println("Couldn't find next coordinates");
-                return -1;
+                return visitedNodes;
             }
             current = nodes.stream().filter(node -> node.getPosition().equals(nextCoords)).findFirst().orElse(null);
         }
-        return count;
+        visitedNodes.add(start);
+        return visitedNodes;
     }
 }
