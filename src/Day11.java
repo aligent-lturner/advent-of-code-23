@@ -1,10 +1,9 @@
 import Util.Coordinates;
 import Util.ReadFileAsArray;
+import Util.TransposeLines;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Day11 {
 
@@ -13,7 +12,7 @@ public class Day11 {
     public static void main(String[] args) {
         List<String> galaxyMap = ReadFileAsArray.execute("./input/day-11.txt");
         List<Integer> emptyRows = getEmptyRows(galaxyMap);
-        List<Integer> emptyColumns = getEmptyRows(transposeLines(galaxyMap));
+        List<Integer> emptyColumns = getEmptyRows(TransposeLines.execute(galaxyMap));
 
         List<Coordinates> galaxies = getGalaxyCoordinates(galaxyMap, emptyRows, emptyColumns, 1);
         long distanceSum = findDistancesSum(galaxies);
@@ -31,19 +30,6 @@ public class Day11 {
             }
         }
         return emptyRows;
-    }
-
-    private static List<String> transposeLines(List<String> lines) {
-        List<List<Character>> transposed = IntStream.range(0, lines.getFirst().length()).
-                mapToObj(i -> lines.stream().map(line -> line.charAt(i)).collect(Collectors.toList())).
-                toList();
-        return transposed.stream().map(charList ->  {
-            StringBuilder sb = new StringBuilder();
-            for (Character character : charList) {
-                sb.append(character);
-            }
-            return sb.toString();
-        }).toList();
     }
 
     private static List<Coordinates> getGalaxyCoordinates(List<String> galaxyMap,
