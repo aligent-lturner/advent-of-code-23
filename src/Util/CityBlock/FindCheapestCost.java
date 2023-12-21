@@ -12,7 +12,13 @@ public class FindCheapestCost {
     private static Map<String, Integer> seenCostsByState;
     private static Integer finalCost;
 
-    public static int execute(Grid grid, Coordinates start, Coordinates end) {
+    public static int execute(
+            Grid grid,
+            Coordinates start,
+            Coordinates end,
+            int minDistanceBeforeTurning,
+            int maxDistanceBeforeTurning
+    ) {
         statesByCost = new TreeMap<>();
         seenCostsByState = new HashMap<>();
         finalCost = null;
@@ -33,12 +39,14 @@ public class FindCheapestCost {
             // process each state
             for (State state : nextStates) {
                 // new directions (turning left/right)
-                Set<Direction> newDirections = state.getDirection().getPerpendicularDirections();
-                for (Direction direction : newDirections) {
-                    moveAndAddState(grid, end, currentCost, state.getCoordinates(), direction, 1);
+                if (state.getDistance() >= minDistanceBeforeTurning) {
+                    Set<Direction> newDirections = state.getDirection().getPerpendicularDirections();
+                    for (Direction direction : newDirections) {
+                        moveAndAddState(grid, end, currentCost, state.getCoordinates(), direction, 1);
+                    }
                 }
                 // continue straight if possible
-                if (state.getDistance() < 3) {
+                if (state.getDistance() < maxDistanceBeforeTurning) {
                     moveAndAddState(
                             grid,
                             end,

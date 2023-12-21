@@ -14,8 +14,18 @@ public class Day17 {
         int cost = FindCheapestCost.execute(
                 grid,
                 new Coordinates(1, 1),
-                new Coordinates(lines.size(), lines.getFirst().length())
+                new Coordinates(lines.size(), lines.getFirst().length()),
+                1,
+                3
         );
         System.out.println("Part 1: Cost = " + cost);
+        cost = FindCheapestCost.execute(
+                grid,
+                new Coordinates(1, 1),
+                new Coordinates(lines.size(), lines.getFirst().length()),
+                4,
+                10
+        );
+        System.out.println("Part 2: Cost = " + cost);
     }
 }
