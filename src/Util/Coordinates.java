@@ -25,6 +25,19 @@ public class Coordinates {
         return y;
     }
 
+    public Coordinates move(Direction direction, int distance) {
+        return switch (direction) {
+            case Direction.UP -> move(0, -distance);
+            case Direction.DOWN -> move(0, distance);
+            case Direction.LEFT -> move(-distance, 0);
+            case Direction.RIGHT -> move(distance, 0);
+        };
+    }
+
+    private Coordinates move(int x, int y) {
+        return new Coordinates(this.x + x, this.y + y);
+    }
+
     public boolean equals(Object other) {
         if (!(other instanceof  Coordinates)) {
             return false;

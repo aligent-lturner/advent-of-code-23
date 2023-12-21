@@ -1,4 +1,7 @@
 package Util;
+
+import java.util.Set;
+
 public enum Direction {
     RIGHT (1),
     LEFT (2),
@@ -13,5 +16,12 @@ public enum Direction {
 
     public String getCode() {
         return String.valueOf(code);
+    }
+
+    public Set<Direction> getPerpendicularDirections() {
+        return switch (this) {
+            case UP, DOWN -> Set.of(LEFT, RIGHT);
+            case LEFT,RIGHT -> Set.of(UP,DOWN);
+        };
     }
 }
