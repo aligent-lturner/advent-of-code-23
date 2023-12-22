@@ -19,8 +19,8 @@ public class GetPolygonArea {
             y1 = coordinatesList.get(i-1).getY();
 
             if (i == numVertices) {
-                x2 = coordinatesList.get(0).getX();
-                y2 = coordinatesList.get(0).getY();
+                x2 = coordinatesList.getFirst().getX();
+                y2 = coordinatesList.getFirst().getY();
             } else {
                 x2 = coordinatesList.get(i).getX();
                 y2 = coordinatesList.get(i).getY();
