@@ -4,15 +4,15 @@ import java.util.List;
 
 public class GetPolygonArea {
 
-    public static int execute(List<Coordinates> coordinatesList) {
+    public static long execute(List<Coordinates> coordinatesList) {
         // use shoelace algorithm to find area of polygon
         // list must be ordered
         // sum of determinants will be twice the area
         int numVertices = coordinatesList.size();
 
-        int area = 0;
+        long area = 0;
 
-        int x1, x2, y1, y2;
+        long x1, x2, y1, y2;
 
         for (int i = 1; i <= numVertices; i++) {
             x1 = coordinatesList.get(i-1).getX();
@@ -30,7 +30,7 @@ public class GetPolygonArea {
         return Math.abs(area/2);
     }
 
-    private static int getDeterminant(int a, int b, int c, int d) {
+    private static long getDeterminant(long a, long b, long c, long d) {
         return a*d - b*c;
     }
 }

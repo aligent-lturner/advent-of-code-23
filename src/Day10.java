@@ -28,10 +28,10 @@ public class Day10 {
         int steps = loopNodes.size();
         System.out.println("Part 1: Max distance = " + steps/2);
 
-        int loopArea = GetPolygonArea.execute(loopNodes.stream().map(PipeNode::getPosition).toList());
+        long loopArea = GetPolygonArea.execute(loopNodes.stream().map(PipeNode::getPosition).toList());
         // pick's theorem is that A = i + b/2 - 1, where A = area, i = interior points, b = edge points
         // therefore, i = A - b/2 + 1
-        int enclosedPoints = loopArea - (steps / 2) + 1;
+        long enclosedPoints = loopArea - (steps / 2) + 1;
         System.out.println("Part 2: enclosed node count = " + enclosedPoints);
     }
 
